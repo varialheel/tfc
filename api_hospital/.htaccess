@@ -1,0 +1,10 @@
+#Indexa las carpetas para que no se puedan acceder a las carpetas que no tengan un archivo index
+Options All -Indexes
+#activa la multivista para que solo tenga en cuenta el nombre del fichero y no la extension
+Options -MultiViews
+#activamos la reescritura de urls
+RewriteEngine On
+#creamos una condicion para la siguiente regla de manera que si el fichero solicitado no existe se ejecutara la siguiente regla
+RewriteCond %{REQUEST_FILENAME} !-f
+#creamos una regla para que si se escribe un fichero que no existe se reedirija al index (QSA indica que los parametros en la url deben conservarse y la l indica que la ultima regla debe aplicarse)
+RewriteRule ^ index.php [QSA,L]
