@@ -37,20 +37,23 @@ if(isset($method)){
                      require_once "routes/services/delete.php";
                  }
             } else {
-                $json = [
-                    "status"=>403,
-                    "result"=>"Unauthorized access"
-                ];
-                    echo json_encode($json,http_response_code($json["status"]));
-                    return;
+                // $json = [
+                //     "status"=>403,
+                //     "result"=>"Unauthorized access"
+                // ];
+                //     echo json_encode($json,http_response_code($json["status"]));
+                //     return;
+                GetController::fncResponse("Unauthorized access",403);
             }
         } else {
-            $json = [
-                "status"=>403,
-                "result"=>"Unauthorized access"
-            ];
-                echo json_encode($json,http_response_code($json["status"]));
-                return;
+            // $json = [
+            //     "status"=>403,
+            //     "result"=>"Unauthorized access"
+            // ];
+            //     echo json_encode($json,http_response_code($json["status"]));
+            //     return;
+            
+            GetController::fncResponse("Unauthorized access",403);
         }
     } else {
          if ($method==="POST") {

@@ -19,13 +19,15 @@ class PostController
             // comprobamos que la consulta se realiza correctamente
             if (PostModel::insertData($table, $datasPost)) {
                 $response = "Datas inserted correctly";
+                GetController::fncResponse($response);
             } else {
-                $response = [false, "Data couldn't be inserted, please try again"];
+                $response = "Data couldn't be inserted, please try again";
+                GetController::fncResponse($response,409);
             }
         } else {
-            $response = [false, "The number of columns doesn't match"];
+            $response = "The number of columns doesn't match";
+            GetController::fncResponse($response,409);
         }
-        GetController::fncResponse($response);
     }
     // la funcion login nos permitira comprobar que el usuario y la contraseña existen en la base de datos y enviaremos el token como respuesta
     static public function login($datas)
@@ -34,16 +36,18 @@ class PostController
         if (isset($datas["username"]) && isset($datas["password"])) {
             $user = GetModel::getUser($datas["username"])[0];
             // comprobamos que el usuario existe
-            if (count($user)>0) {
+            if ($user!=null) {
                 // si existe el usuario comprobaremos la contraseña y si existe enviaremos el token
                 if (password_verify($datas["password"],$user["password"])) {
                     GetController::fncResponse(token::createToken($user));
                 } else {
-                    GetController::fncResponse([]);
+                    GetController::fncResponse("Login failed",404);
                 }
+            } else {
+                GetController::fncResponse("Data not found",404);
             }
         } else {
-            GetController::fncResponse([]);
+            GetController::fncResponse("Data not found",404);
         }
     }
     // la funcion generatePassword la usaremos para generar contraseñas aleatorias

@@ -46,7 +46,8 @@ class GetController {
             "status" => $code,
             "results" => $response
         ];
-        echo json_encode($json,http_response_code($json["status"]));
+        echo json_encode($json,http_response_code(200));
+        return;
     }
     // La funvion nextCita nos permitira consultar la cita del dia indicado del medico que lo ejecute de manera que dicha cita se enviará a la arduino para que sea mostrada en la pantalla lcd
     static public function nextCita($token,$date) {
@@ -58,10 +59,10 @@ class GetController {
             if (isset($prueba)) {
                 $response =  $result;
             } else {
-                $response = [false,"Conection failed"];
+                $response = "Conection failed";
             }
         } else {
-            $response = [false,"Data not found"];
+            $response = "Data not found";
         }
         GetController::fncResponse($response);
     }

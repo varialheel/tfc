@@ -4,6 +4,10 @@ Options All -Indexes
 Options -MultiViews
 #activamos la reescritura de urls
 RewriteEngine On
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE"
+Header set Access-Control-Allow-Headers "*"
+
 #creamos una condicion para la siguiente regla de manera que si el fichero solicitado no existe se ejecutara la siguiente regla
 RewriteCond %{REQUEST_FILENAME} !-f
 #creamos una regla para que si se escribe un fichero que no existe se reedirija al index (QSA indica que los parametros en la url deben conservarse y la l indica que la ultima regla debe aplicarse)

@@ -16,11 +16,11 @@ class PutController
                 GetController::fncResponse($response);
             } else {
                 $response = "Data couldn't be modified, please try again";
-                GetController::fncResponse($response,400);
+                GetController::fncResponse($response,409);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,400);
+            GetController::fncResponse($response,409);
         }
         
     }
@@ -32,11 +32,11 @@ class PutController
                 GetController::fncResponse($response);
             } else {
                 $response = "Data couldn't be modified, please try again";
-                GetController::fncResponse($response,400);
+                GetController::fncResponse($response,409);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,400);
+            GetController::fncResponse($response,409);
         }
     }
 }
