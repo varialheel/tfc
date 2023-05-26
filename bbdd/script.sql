@@ -78,4 +78,10 @@ CREATE TABLE Receta (
 
 INSERT INTO `departamento` (`id_departamento`, `nombre`, `arduino`) VALUES (NULL, 'traumatologia', '192.168.1.177');
 INSERT INTO `usuario`(`id_usuario`, `username`, `password`, `rol`) VALUES (NULL,'admin','$2y$10$qJbDpxbOxxEKrfQDJ87UbuMETceMokvDlzjy/xmonAKNtaGyaCGrC','admin');
+INSERT INTO `usuario`(`id_usuario`, `username`, `password`, `rol`) VALUES (NULL,'papa6285','$2y$10$2OTeqWsScvSWdbBV2G6inOiZ6zlGW9FZaZTAI2zXeY4FQnVXfcYPm','paciente');
+INSERT INTO `usuario`(`id_usuario`, `username`, `password`, `rol`) VALUES (NULL,'meme8169','$2y$10$hT2FLqKZqaVK8/9sTv6mN.Pk5vO5wj06QTi/vW7hGP0I9MQnfNgEa','medico');
 INSERT INTO `medico` (`dni_medico`, `nombre`, `apellido`, `telefono`, `email`, `consulta`, `id_departamento`, `id_usuario`) VALUES ('1234', 'admin', 'admin', '111111111', '4abcgarciaoscar@gmail.com', 'tr-1', '1', '1');
+INSERT INTO `medico` (`dni_medico`, `nombre`, `apellido`, `telefono`, `email`, `consulta`, `id_departamento`, `id_usuario`) VALUES ('123456788A', 'medico1', 'medico1', '123456789', 'yixoye6876@favilu.com', 'tr-2', '1', '3');
+INSERT INTO `paciente`(`dni_paciente`, `nombre`, `apellido`, `fec_nac`, `telefono`, `direccion`, `email`, `id_usuario`) VALUES ('12345678A','paciente1','paciente1','1995-05-22','123456789','calle1','4abcgarciaoscar@gmail.com','2
+');
+INSERT INTO `cita` (`id_cita`, `fecha`, `proposito`, `dni_paciente`, `dni_medico`, `estado`) VALUES (NULL, '2023-05-09', 'cita de prueba', '12345678A', '123456788', 'pendiente');

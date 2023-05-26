@@ -23,7 +23,7 @@ const login = async () => {
             let dni = await getRequest(`${baseUrl}paciente/?select=dni_paciente&linkTo=id_usuario&equalTo=${result.results.token.slice(-1)}`,result.results.token);
             result.results.dni = dni.results[0].dni_paciente;
             sessionStorage.setItem("user",JSON.stringify(result.results));
-            console.log("paciente")
+            window.location='pages/pacient_pages/home.html';
         } else {
             let dni = await getRequest(`${baseUrl}medico/?select=dni_medico&linkTo=id_usuario&equalTo=${result.results.token.slice(-1)}`,result.results.token);
             result.results.dni = dni.results[0].dni_medico;
