@@ -4,4 +4,6 @@ require_once 'controllers/DeleteController.php';
 $datas = filter_input_array(INPUT_GET);
 if(isset($datas)){
     DeleteController::deleteData($rutas[2],$datas);
+} else {
+    GetController::fncResponse("No data were sent",404);
 }

@@ -10,12 +10,13 @@ if (isset($datas["password"])) {
 if ($rutas[2]=="usuario"||$rutas[2]=="medico"||$rutas[2]=="paciente") {
     $user = token::getUser($token);
     if ($datas["id_usuario"]!=$user->id_usuario) {
-        $json = [
-            "status"=>403,
-            "result"=>"Unauthorized access"
-        ];
-            echo json_encode($json,http_response_code($json["status"]));
-            return;
+        // $json = [
+        //     "status"=>403,
+        //     "result"=>"Unauthorized access"
+        // ];
+        //     echo json_encode($json,http_response_code($json["status"]));
+        //     return;
+            GetController::fncResponse("Unauthorized access",401);
     } else {
         $datas["rol"]= $user->rol;
     }
@@ -24,7 +25,11 @@ if ($rutas[2]=="usuario"||$rutas[2]=="medico"||$rutas[2]=="paciente") {
 if(isset($datas)){
     if ($rutas[2]=="changeRol") {
         PutController::changeRol($datas);
+    } else if ($rutas[2]=="password") {
+        PutController::changePassword($datas);
     } else {
         PutController::modifyData($rutas[2],$datas);
     }
+} else {
+    GetController::fncResponse("No data were sent",404);
 }

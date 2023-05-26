@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/loader.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid h-100">
+        <div class="row align-items-center h-100" id="form__container">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Iniciar sesión</h4>
+                        <form action="#" method="post" id="register__form">
+                            <div class="form-group">
+                                <label for="dni">DNI: *</label>
+                                <input type="text" class="form-control" id="dni" name="dni" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Nombre: *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname">Apellidos: *</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fec_nac">Fecha de nacimiento: *</label>
+                                <input type="date" class="form-control" id="fec_nac" name="fec_nac" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tlf">Teléfono: *</label>
+                                <input type="text" class="form-control" id="tlf" name="tlf" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Dirección: *</label>
+                                <input type="text" class="form-control" id="address" name="address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mail">Correo electrónico: *</label>
+                                <input type="email" class="form-control" id="mail" name="mail" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <button type="submit" class="btn btn-primary btn-block d-flex justify-content-center"><span id="button">Aceptar</span>
+                                    <div class="lds-default hidden" id="loader">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </button>
+                            </div>
+                            <a class="btn btn-primary btn-block" href="../index.html" role="button">Volver</a>
+                        </form>
+                        <p id="errorP"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center hidden" id="inserted">
+            <div class="col-md-6">
+                <h2>Ha sido registrado correctamente, por favor revise su correo electrónico.</h2>
+                <a class="btn btn-primary btn-block" href="../index.html" role="button">Volver</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="../js/request.js"></script>
+    <script src="../js/register.js"></script>
+</body>
+
+</html>

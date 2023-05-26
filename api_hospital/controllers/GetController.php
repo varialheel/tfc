@@ -8,7 +8,7 @@ class GetController {
     static public function getData($table,$select,$orderBy,$orderMode,$startAt,$limit) {
         $response = GetModel::getData($table,$select,$orderBy,$orderMode,$startAt,$limit);
         if ($response==NULL) {
-            GetController::fncResponse("Data not found",400);
+            GetController::fncResponse("Data not found",404);
         } else {
             GetController::fncResponse($response);
         }
@@ -17,7 +17,7 @@ class GetController {
     static public function getDataFilter($table,$select,$linkTo,$equalTo,$orderBy,$orderMode,$startAt,$limit) {
         $response = GetModel::getDataFilter($table,$select,$linkTo,$equalTo,$orderBy,$orderMode,$startAt,$limit);
         if ($response==NULL) {
-            GetController::fncResponse("Data not found",400);
+            GetController::fncResponse("Data not found",404);
         } else {
             GetController::fncResponse($response);
         }
@@ -26,7 +26,7 @@ class GetController {
     static public function getRelData($rel,$key,$select,$orderBy,$orderMode,$startAt,$limit) {
         $response = GetModel::getRelData($rel,$key,$select,$orderBy,$orderMode,$startAt,$limit);
         if ($response==NULL) {
-            GetController::fncResponse("Data not found",400);
+            GetController::fncResponse("Data not found",404);
         } else {
             GetController::fncResponse($response);
         }
@@ -35,7 +35,7 @@ class GetController {
     static public function getRelDataFilter($rel,$key,$select,$orderBy,$orderMode,$startAt,$limit,$linkto,$equalTo) {
         $response = GetModel::getRelDataFilter($rel,$key,$select,$orderBy,$orderMode,$startAt,$limit,$linkto,$equalTo);
         if ($response==NULL) {
-            GetController::fncResponse("Data not found",400);
+            GetController::fncResponse("Data not found",404);
         } else {
             GetController::fncResponse($response);
         }
@@ -46,7 +46,7 @@ class GetController {
             "status" => $code,
             "results" => $response
         ];
-        echo json_encode($json,http_response_code(200));
+        echo json_encode($json,http_response_code($code));
         return;
     }
     // La funvion nextCita nos permitira consultar la cita del dia indicado del medico que lo ejecute de manera que dicha cita se enviará a la arduino para que sea mostrada en la pantalla lcd
@@ -58,12 +58,15 @@ class GetController {
             $prueba = file_get_contents("http://".$result['arduino']."/Data=".$name."_Consulta:".$result["consulta"].";");
             if (isset($prueba)) {
                 $response =  $result;
+                GetController::fncResponse($response);
             } else {
                 $response = "Conection failed";
+                GetController::fncResponse($response,503);
             }
         } else {
             $response = "Data not found";
+            GetController::fncResponse($response,404);
         }
-        GetController::fncResponse($response);
+        
     }
 }

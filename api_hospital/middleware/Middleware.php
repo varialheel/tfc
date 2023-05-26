@@ -4,7 +4,7 @@ class Middleware {
     static public function checkAccess($ruta,$token,$method) {
         $access = false;
         // comprobamos que la ruta no sea ni login ni register ya que no hace falta un token para acceder (en register será necesario si se quiere registrar un médico ya que solo puede crearlo un admin)
-        if ($ruta=="login"||$ruta=="register") {
+        if ($ruta=="login"||$ruta=="register"||$ruta=="password") {
             $access=true;
         } else {
             // comprobamos que se tenga acceso a las diferentes rutas y metodos, en caso de no tener acceso se devolverá false

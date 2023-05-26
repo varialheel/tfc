@@ -11,7 +11,7 @@ class DeleteController {
             GetController::fncResponse($response);
         } else {
             $response="Data couldn't be deleted, please try again";
-            GetController::fncResponse($response,409);
+            GetController::fncResponse($response,500);
         }
     } 
 }

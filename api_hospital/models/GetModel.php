@@ -133,4 +133,9 @@ class GetModel {
         $sql = 'SELECT arduino, paciente.nombre, paciente.apellido, consulta FROM `cita` inner JOIN medico on cita.dni_medico = medico.dni_medico inner join departamento on departamento.id_departamento = medico.id_departamento inner join paciente on cita.dni_paciente = paciente.dni_paciente where `fecha` = ? and medico.id_usuario = ? and `estado` = "pendiente" limit 1';
         return $bd->select($sql,[$date,$id])[0];
     }
+    static public function getMail($mail) {
+        $bd = new Bd();
+        $sql = "select user.id_usuario, user.email, usuario.username from (SELECT email, id_usuario from paciente where `email` = ? UNION SELECT email, id_usuario from medico where `email` = ?) as user INNER JOIN usuario on usuario.id_usuario = user.id_usuario;";
+        return $bd->select($sql,[$mail,$mail]);
+    }
 }

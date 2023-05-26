@@ -31,4 +31,9 @@ class PutModel {
         $sql = "UPDATE usuario SET rol = ? where id_usuario = ?";
         return $bd->consulta($sql,[$datas["rol"],$datas["id_usuario"]]);
     }
+    static public function changePassword($password,$id) {
+        $bd = new Bd();
+        $sql = "UPDATE usuario SET password = ? where id_usuario = ?";
+        return $bd->consulta($sql,[$password,$id]);
+    }
 }

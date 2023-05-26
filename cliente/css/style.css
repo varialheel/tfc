@@ -1,0 +1,14 @@
+html, body {
+    height: 100%;
+}
+
+.card {
+    margin: auto;
+    width: 80%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}

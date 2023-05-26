@@ -19,14 +19,14 @@ class PostController
             // comprobamos que la consulta se realiza correctamente
             if (PostModel::insertData($table, $datasPost)) {
                 $response = "Datas inserted correctly";
-                GetController::fncResponse($response);
+                GetController::fncResponse($response, 201);
             } else {
                 $response = "Data couldn't be inserted, please try again";
-                GetController::fncResponse($response,409);
+                GetController::fncResponse($response, 500);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,409);
+            GetController::fncResponse($response, 400);
         }
     }
     // la funcion login nos permitira comprobar que el usuario y la contraseña existen en la base de datos y enviaremos el token como respuesta
@@ -36,18 +36,22 @@ class PostController
         if (isset($datas["username"]) && isset($datas["password"])) {
             $user = GetModel::getUser($datas["username"])[0];
             // comprobamos que el usuario existe
-            if ($user!=null) {
+            if ($user != null) {
                 // si existe el usuario comprobaremos la contraseña y si existe enviaremos el token
-                if (password_verify($datas["password"],$user["password"])) {
-                    GetController::fncResponse(token::createToken($user));
+                if (password_verify($datas["password"], $user["password"])) {
+                    $response = [
+                        "token" => token::createToken($user),
+                        "rol" => $user["rol"]
+                    ];
+                    GetController::fncResponse($response);
                 } else {
-                    GetController::fncResponse("Login failed",404);
+                    GetController::fncResponse("Login failed", 401);
                 }
             } else {
-                GetController::fncResponse("Data not found",404);
+                GetController::fncResponse("Login failed", 401);
             }
         } else {
-            GetController::fncResponse("Data not found",404);
+            GetController::fncResponse("Data not found", 400);
         }
     }
     // la funcion generatePassword la usaremos para generar contraseñas aleatorias
@@ -71,39 +75,43 @@ class PostController
     {
         $datasPost = [];
         // comprobamos que el nº de columnas coinciden con los datos
-        if (count($datas) == count(GetModel::getColumns($rol))-1) {
+        if (count($datas) == count(GetModel::getColumns($rol)) - 1) {
             // generamos la contraseña
             $pass = PostController::generatePassword();
             // creamos un array con los datos del usuario
-            $userdata = [NULL,PostController::generateUsername($datas), password_hash($pass,PASSWORD_DEFAULT), $rol];
-            // comprobamos que se realiza la consulta
-            if (PostModel::insertData("usuario", $userdata)) {
-                // si se realiza la consulta enviaremos un mail a la direccion del usuario con los datos para realizar el login
-                Mail::sendMail($datas["email"], "Usuario: $userdata[1]\nContraseña: $pass");
-                // añadimos los datos a un array
-                foreach ($datas as $key => $value) {
-                    array_push($datasPost, $value);
-                }
-                // cogemos el id del usuario insertado y lo añadimos al array
-                $id = GetModel::getUser($userdata[1])[0]["id_usuario"];
-                array_push($datasPost, $id);
+            $userdata = [NULL, PostController::generateUsername($datas), password_hash($pass, PASSWORD_DEFAULT), $rol];
+            if (count(GetModel::getDataFilter($rol, "*", "dni_$rol", $datas["dni_$rol"], null, null, null, null)) > 0) {
+                GetController::fncResponse("usuario existente", 409);
+            } else {
                 // comprobamos que se realiza la consulta
-                if (PostModel::insertData($rol, $datasPost)) {
-                    // si se realiza la consulta crearemos la key para poder descifrar el token
-                    token::createKey($id);
-                    $response = "Datas inserted correctly";
-                    GetController::fncResponse($response);
+                if (PostModel::insertData("usuario", $userdata) && Mail::sendMail($datas["email"], "Usuario: $userdata[1]\nContraseña: $pass", 'Registro de usuario')) {
+
+                    // añadimos los datos a un array
+                    foreach ($datas as $key => $value) {
+                        array_push($datasPost, $value);
+                    }
+                    // cogemos el id del usuario insertado y lo añadimos al array
+                    $id = GetModel::getDataFilter("usuario", "*", "username", $userdata[1], null, null, null, null)[0]["id_usuario"];
+                    // $id = GetModel::getUser($userdata[1])[0]["id_usuario"];
+                    array_push($datasPost, $id);
+                    // comprobamos que se realiza la consulta
+                    if (PostModel::insertData($rol, $datasPost)) {
+                        // si se realiza la consulta crearemos la key para poder descifrar el token
+                        token::createKey($id);
+                        $response = "Datas inserted correctly";
+                        GetController::fncResponse($response, 201);
+                    } else {
+                        $response = "Data couldn't be inserted, please try again";
+                        GetController::fncResponse($response, 500);
+                    }
                 } else {
                     $response = "Data couldn't be inserted, please try again";
-                    GetController::fncResponse($response,400);
+                    GetController::fncResponse($response, 500);
                 }
-            } else {
-                $response = "Data couldn't be inserted, please try again1";
-                GetController::fncResponse($response,400);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,400);
+            GetController::fncResponse($response, 400);
         }
     }
 }

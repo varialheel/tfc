@@ -7,12 +7,13 @@ $datas = json_decode(file_get_contents("php://input"),true);
 $rol = filter_input(INPUT_GET,"rol");
 // como solo el administrador puede crear medicos comprobaremos que el rol de la persona que vamos a insertar es médico y comprobaremos el token, si no tiene acceso mostraremos un error
 if (isset($rol) && $rol=="medico" && !token::checkToken($token,"admin")) {
-    $json = [
-        "status"=>404,
-        "result"=>"Unauthorized access2"
-    ];
-        echo json_encode($json,http_response_code($json["status"]));
-        return;
+    // $json = [
+    //     "status"=>404,
+    //     "result"=>"Unauthorized access2"
+    // ];
+    //     echo json_encode($json,http_response_code($json["status"]));
+    //     return;
+        GetController::fncResponse("Unauthorized access",404);
 }
 // comprobamos que existan las rutas y si es login o register
 if(isset($datas)&&isset($rutas[2])){
@@ -24,4 +25,6 @@ if(isset($datas)&&isset($rutas[2])){
         PostController::insertData($rutas[2],$datas);
     }
     
+} else {
+    GetController::fncResponse("No data were sent",404);
 }

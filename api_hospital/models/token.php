@@ -66,7 +66,7 @@ class token {
         $date = time();
         $datas = [
             "iat"=>$date,
-            "exp"=>($date + (60*60)),
+            "exp"=>($date + ((60*60)*24)),
             "data"=>$user
         ];
         $key =token::getKey($user["id_usuario"]);

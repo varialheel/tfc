@@ -2,6 +2,7 @@
 // importamos los modelos
 require_once "models/PutModel.php";
 require_once "models/GetModel.php";
+require_once "PostController.php";
 // creamos la clase del controlador
 class PutController
 {
@@ -16,11 +17,11 @@ class PutController
                 GetController::fncResponse($response);
             } else {
                 $response = "Data couldn't be modified, please try again";
-                GetController::fncResponse($response,409);
+                GetController::fncResponse($response,500);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,409);
+            GetController::fncResponse($response,400);
         }
         
     }
@@ -32,11 +33,24 @@ class PutController
                 GetController::fncResponse($response);
             } else {
                 $response = "Data couldn't be modified, please try again";
-                GetController::fncResponse($response,409);
+                GetController::fncResponse($response,500);
             }
         } else {
             $response = "The number of columns doesn't match";
-            GetController::fncResponse($response,409);
+            GetController::fncResponse($response,400);
+        }
+    }
+    static public function changePassword($data) {
+        $password = PostController::generatePassword();
+        $mail = GetModel::getMail($data["email"])[0];
+        try {
+            if(PutModel::changePassword(password_hash($password,PASSWORD_DEFAULT),$mail["id_usuario"])&&Mail::sendMail($mail["email"], "Usuario: ".$mail['username']."\nContraseña: $password",'Recuperación de contraseña')) {
+                GetController::fncResponse("Password updated");
+            } else {
+                GetController::fncResponse("Password could not be updated",500);
+            }
+        } catch(Exception $e){
+            GetController::fncResponse($e,500);
         }
     }
 }

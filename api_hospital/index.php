@@ -4,6 +4,10 @@ require_once "vendor/autoload.php";
 require_once "models/token.php";
 require_once "middleware/Middleware.php";
 // indicamos que no reporte los errores y que si hay algún error quede guardado en un log
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
 error_reporting(0);
 ini_set('display_error',1);
 ini_set('log_errors',1);

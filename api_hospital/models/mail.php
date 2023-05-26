@@ -8,7 +8,7 @@ require 'vendor/autoload.php';
 class Mail
 {
     //Create an instance; passing `true` enables exceptions
-    static public function sendMail($destino, $body)
+    static public function sendMail($destino, $body, $subject)
     {
         $mail = new PHPMailer(true);
 
@@ -36,14 +36,14 @@ class Mail
             //Content
             $mail->isHTML(false);
             //Set email format to HTML
-            $mail->Subject = 'Registro de usuario';
+            $mail->Subject = $subject;
             //insertamos el body al mail
             $mail->Body = $body;
             $mail->CharSet = 'UTF-8';
             $mail->send();
             return true;
         } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            return false;
         }
     }
 }
