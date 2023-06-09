@@ -7,7 +7,7 @@ const showCitas = (citas)=>{
     let fragment = document.createDocumentFragment();
     let cita;
     citas.forEach(element => {
-        let enlace = createA("Atender",`atender.html?id=${element.id_cita}`,["btn","btn-link"])
+        let enlace = createA("Ver cita",`view_cita.html?id=${element.id_cita}`,["btn","btn-link"])
         let td = createTd();
         td.appendChild(enlace)
         cita = createTr("table-dark")
@@ -15,19 +15,15 @@ const showCitas = (citas)=>{
         cita.appendChild(createTd(element.hora))
         cita.appendChild(createTd(`${element.nombre} ${element.apellido}`))
         cita.appendChild(createTd(element.proposito))
-        cita.appendChild(createTd(element.estado))
         cita.appendChild(td)
         fragment.appendChild(cita);
     });
     citaContainer.appendChild(fragment);
 }
 const loadCitas = async () => {
-    var fecha = new Date();
-    let año = fecha.getFullYear();
-    let mes = fecha.getMonth()+1 < 10 ? `0${fecha.getMonth()+1}` : fecha.getMonth()+1;
-    var dia = fecha.getDate() < 10 ? `0${fecha.getDate()}` : fecha.getDate();
+    let error = "";
     let user = JSON.parse(sessionStorage.getItem("user"));
-    let result = await getRequest(`${baseUrl}relations/?rel=cita,paciente&key=dni_paciente&linkTo=fecha,id_medico&equalTo=${año}-${mes}-${dia},${user.id_medico}&orderBy=hora&orderMode=asc`, user.token)
+    let result = await getRequest(`${baseUrl}relations/?rel=cita,medico&key=id_medico&linkTo=dni_paciente,estado&equalTo=${user.dni},Pendiente`, user.token);
     loader.classList.toggle("hidden")
     if (typeof result=="number") {
         if (result==500) {

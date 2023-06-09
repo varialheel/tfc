@@ -1,0 +1,8 @@
+.profile__div {
+    margin-right: 5em;
+
+}
+.profile__dropdown {
+    min-width: 8rem !important;
+    max-width: 10em;
+}

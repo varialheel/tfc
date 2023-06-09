@@ -12,3 +12,10 @@ html, body {
 .hidden {
     display: none;
 }
+textarea {
+    resize: none;
+}
+.add_scroll {
+    max-height: 590px;
+    overflow-y: scroll;
+}

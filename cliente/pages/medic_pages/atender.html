@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../../css/loader.css">
+  <link rel="stylesheet" href="../../css/nav.css">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="home.html">Inicio</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="atender.html">atender</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="recetas.html">Recetas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="insert_cita.html">Pedir cita</a>
+          </li>
+        </ul>
+
+        <div class="nav-item dropdown profile__div">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-fill"></i> Perfil
+          </a>
+          <ul class="dropdown-menu profile__dropdown">
+            <li><a class="dropdown-item" href="account.html"><i class="bi bi-person-lines-fill"></i> Ver perfil</a>
+            </li>
+            <li><a class="dropdown-item" href="#" id="close_session"><i class="bi bi-door-closed"></i> Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="spinner-border spinner" role="status" id="loader">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <div class="hidden"id="citaContainer">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Información de la cita</h5>
+  
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+              <p><strong>Hora:</strong> <span id="hora"></span></p>
+              <p><strong>Propósito:</strong></p>
+              <p class="text-break" id="proposito"></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>DNI del paciente:</strong> <span id="dni_paciente"></span></p>
+              <p><strong>Estado:</strong> <span id="estado"></span></p>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center" id="buttons">
+            <button class="btn btn-info col-5 mx-2"><span id="historialSpan">Atendido</span>
+              <div class="lds-default hidden" id="historialLoader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div></button>
+            <button class="btn btn-danger col-5 mx-2"><span id="historialSpan">No presentado</span>
+              <div class="lds-default hidden" id="historialLoader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div></button>
+          </div>
+          <div class="justify-content-center btn btn-primary col-3 mx-auto hidden" id="buttonsLoader">
+              <div class="lds-default">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+              </div>
+          </div>
+          <div class="row mt-3 d-flex align-items-center flex-column">
+            <button class="btn btn-primary col-5 my-2"  id="btn-modificar-historial" data-bs-toggle="modal" data-bs-target="#modal-historial">Ver historial</button>
+            <button class="btn btn-success col-5 my-2" id="btn-ver-recetas" data-bs-toggle="modal" data-bs-target="#modal-recetas">Ver recetas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modal-historial" tabindex="-1" aria-labelledby="modal-historial-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-historial-label">Modificar historial</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" id="crossButton"></button>
+        </div>
+        <div class="modal-body add_scroll">
+          <form id="modifyHistorial" action="#" method="post">
+            <div class="mb-3">
+              <label for="antecedentes" class="form-label">Antecedentes:</label>
+              <textarea class="form-control" id="antecedentes" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="medicamentos" class="form-label">Medicamentos:</label>
+              <textarea class="form-control" id="medicamentos" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="vacunas" class="form-label">Vacunas:</label>
+              <textarea class="form-control" id="vacunas" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="pruebas" class="form-label">Pruebas:</label>
+              <textarea class="form-control" id="pruebas" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="consultas" class="form-label">Consultas:</label>
+              <textarea class="form-control" id="consultas" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="cirugias" class="form-label">Cirugías:</label>
+              <textarea class="form-control" id="cirugias" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="notas" class="form-label">Notas:</label>
+              <textarea class="form-control" id="notas" rows="3"></textarea>
+            </div>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            
+            <button type="submit" class="btn btn-primary"><span id="historialSpan">Aceptar</span>
+              <div class="lds-default hidden" id="historialLoader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+              </div></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Modal de Recetas -->
+<div class="modal fade" id="modal-recetas" tabindex="-1" aria-labelledby="modal-recetas-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-recetas-label">Recetas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Medicamento</th>
+              <th scope="col">Dosis</th>
+              <th scope="col">Frecuencia</th>
+            </tr>
+          </thead>
+          <tbody id="recetas">
+            
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-crear-receta">Crear Receta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Crear Receta -->
+<div class="modal fade" id="modal-crear-receta" tabindex="-1" aria-labelledby="modal-crear-receta-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-crear-receta-label">Crear Receta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="createReceta" action="#" method="post">
+          <div class="mb-3">
+            <label for="medicamento" class="form-label">Medicamento</label>
+            <input type="text" class="form-control" id="medicamento">
+          </div>
+          <div class="mb-3">
+            <label for="dosis" class="form-label">Dosis</label>
+            <input type="text" class="form-control" id="dosis">
+          </div>
+          <div class="mb-3">
+            <label for="frecuencia" class="form-label">Frecuencia</label>
+            <input type="text" class="form-control" id="frecuencia">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary"><span id="recetaSpan">Aceptar</span>
+              <div class="lds-default hidden" id="recetaLoader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+              </div></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="results" tabindex="-1" aria-labelledby="result-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="result-modal-label">Resultado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="resultsBody"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="resultButton">Cerrar</button>
+        <button type="button" class="btn btn-secondary hidden" id="nextCita">Siguiente cita</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="arduinoModal" tabindex="-1" aria-labelledby="result-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="result-modal-label">Error de conexión:</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>No se pudo establecer conexión con la arduino. Por favor llame al paciente.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="resultButton">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="container hidden" id="errorContainer">
+    <div class="row justify-content-center">
+      <div class="col-md-6 mt-5">
+        <div id="errorConexion" class="alert" role="alert">
+          <h4 class="alert-heading" id="errorTittle"></h4>
+          <p id="errorP"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+  <script src="../../js/request.js"></script>
+  <script src="../../js/functions.js"></script>
+  <script src="../../js/close_session.js"></script>
+  <script src="../../js/medic_script/atender.js"></script>
+</body>
+
+</html>

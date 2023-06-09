@@ -58,3 +58,22 @@ const putRequest = async (url, data, token = "") => {
     return error; // You can choose to return a custom error object or handle it differently
   }
 };
+const deleteRequest = async (url, token) => {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "token": token
+      }
+    });
+
+    if (!response.ok) {
+      return response.status
+    }
+
+    return response.json();
+  } catch (error) {
+    // Handle the error
+    return error; // You can choose to return a custom error object or handle it differently
+  }
+};
