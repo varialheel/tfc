@@ -8,7 +8,7 @@ require 'vendor/autoload.php';
 class Mail
 {
     //Create an instance; passing `true` enables exceptions
-    static public function sendMail($destino, $body, $subject)
+    static public function sendMail($destino, $body, $subject,$file="")
     {
         $mail = new PHPMailer(true);
 
@@ -39,6 +39,9 @@ class Mail
             $mail->Subject = $subject;
             //insertamos el body al mail
             $mail->Body = $body;
+            if ($file!="") {
+                $mail->addAttachment($file);
+            }
             $mail->CharSet = 'UTF-8';
             $mail->send();
             return true;

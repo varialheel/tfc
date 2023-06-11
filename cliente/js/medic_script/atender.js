@@ -1,8 +1,8 @@
+// guardamos en una variable el parametro pasado por la url
 const idCita = new URLSearchParams(window.location.search).get("id")
+// creamos las variables
 const errorContainer = document.getElementById("errorContainer")
 const citaContainer = document.getElementById("citaContainer")
-const errorTittle = document.getElementById("errorTittle")
-const errorConexion = document.getElementById("errorConexion")
 const errorP = document.getElementById("errorP")
 const fecha = document.getElementById("fecha")
 const hora = document.getElementById("hora")
@@ -18,11 +18,6 @@ const cirugias = document.getElementById("cirugias")
 const notas = document.getElementById("notas")
 const recetas = document.getElementById("recetas")
 const modifyHistorial = document.getElementById("modifyHistorial")
-const createReceta = document.getElementById("createReceta")
-const historialModal = new bootstrap.Modal(document.getElementById('modal-historial'));
-const recetaModal = new bootstrap.Modal(document.getElementById('modal-crear-receta'));
-const resultsModal = new bootstrap.Modal(document.getElementById('results'));
-const arduinoModal = new bootstrap.Modal(document.getElementById('arduinoModal'));
 const resultsBody = document.getElementById('resultsBody');
 const resultButton = document.getElementById('resultButton');
 const nextCita = document.getElementById('nextCita');
@@ -35,8 +30,19 @@ const historialLoader = document.getElementById("historialLoader")
 const historialSpan = document.getElementById("historialSpan")
 const buttons = document.getElementById("buttons")
 const buttonsLoader = document.getElementById("buttonsLoader")
+const createReceta = document.getElementById("createReceta")
+const errorReceta = document.getElementById("errorReceta")
+// para poder manejar los modales de bootstrap tendremos que crear un objeto modal
+const historialModal = new bootstrap.Modal(document.getElementById('modal-historial'));
+const recetaModal = new bootstrap.Modal(document.getElementById('modal-crear-receta'));
+const resultsModal = new bootstrap.Modal(document.getElementById('results'));
+const arduinoModal = new bootstrap.Modal(document.getElementById('arduinoModal'));
 let result;
-
+/**
+ * 
+ * @param cita
+ * con showcita mostraremos la informacion de la cita 
+ */
 const showCita = (cita) => {
     fecha.innerText = cita.fecha;
     hora.innerText = cita.hora
@@ -45,6 +51,11 @@ const showCita = (cita) => {
     estado.innerText = cita.estado
     citaContainer.classList.toggle("hidden")
 }
+/**
+ * 
+ * @param historial 
+ * con showhistorial mostraremos la informacion del historial 
+ */
 const showHistorial = (historial) => {
     antecedentes.innerText = historial.antecedentes;
     vacunas.innerText = historial.vacunas
@@ -54,6 +65,11 @@ const showHistorial = (historial) => {
     cirugias.innerText = historial.cirugias
     notas.innerText = historial.notas
 }
+/**
+ * 
+ * @param array 
+ * con showRecetas mostraremos la informacion de las recetas. Con un bucle recorreremos el array de recetas y crearemos una tr con sus td por cada receta 
+ */
 const showRecetas = (array) => {
     let fragment = document.createDocumentFragment();
     let tr;
@@ -70,18 +86,18 @@ const showRecetas = (array) => {
     });
     recetas.appendChild(fragment)
 }
+/**
+ * 
+ * @param token 
+ * @returns boolean
+ * getHistorial realizara una peticion que recogera los datos del historial del paciente cuya cita se va a atender
+ */
 const getHistorial = async (token) => {
      let historial = await getRequest(`${baseUrl}historial/?linkTo=dni_paciente&equalTo=${result.results[0].dni_paciente}`, token)
     if (typeof historial == "number") {
         if (historial == 500) {
-            errorTittle.innerText = "Error de conexión."
-            errorConexion.classList.remove("alert-info")
-            errorConexion.classList.add("alert-danger")
             error = "No se pudo contectar al servidor. Por favor intentelo más tarde.";
         } else {
-            errorTittle.innerText = "Cita no encontrada."
-            errorConexion.classList.remove("alert-danger")
-            errorConexion.classList.add("alert-info")
             error = "No se ha podido encontrar la cita.";
         }
         errorP.innerText = error;
@@ -92,18 +108,18 @@ const getHistorial = async (token) => {
         return true;
     }
 }
+/**
+ * 
+ * @param token 
+ * @returns boolean
+ * getRecetas realizara una peticion que recogera los datos de las recetas del paciente cuya cita se va a atender
+ */
 const getRecetas = async (token) => {
     let recetasArray = await getRequest(`${baseUrl}receta/?linkTo=dni_paciente&equalTo=${result.results[0].dni_paciente}`, token)
     if (typeof recetasArray == "number") {
         if (recetasArray == 500) {
-            errorTittle.innerText = "Error de conexión."
-            errorConexion.classList.remove("alert-info")
-            errorConexion.classList.add("alert-danger")
             error = "No se pudo contectar al servidor. Por favor intentelo más tarde.";
         } else {
-            errorTittle.innerText = "Recetas no encontradas."
-            errorConexion.classList.remove("alert-danger")
-            errorConexion.classList.add("alert-info")
             error = "No se ha podido encontrar recetas para este paciente.";
         }
         errorP.innerText = error;
@@ -114,6 +130,9 @@ const getRecetas = async (token) => {
         return true;
     }
 }
+/**
+ * getCita comprobara si existe el id de la cita, en caso de que exista se realizara una peticion para atender esa cita, en el caso contrario se atendera a la siguiente cita de dicho dia
+ */
 const getCita = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     if (idCita) {
@@ -126,18 +145,11 @@ const getCita = async () => {
         let user = JSON.parse(sessionStorage.getItem("user"));
         result = await getRequest(`${baseUrl}nextCita/?fecha=${año}-${mes}-${dia}`, user.token)
     }
-    console.log(result)
     loader.classList.toggle("hidden")
     if (typeof result == "number") {
         if (result == 500) {
-            errorTittle.innerText = "Error de conexión."
-            errorConexion.classList.remove("alert-info")
-            errorConexion.classList.add("alert-danger")
             error = "No se pudo contectar al servidor. Por favor intentelo más tarde.";
         } else {
-            errorTittle.innerText = "Cita no encontrada."
-            errorConexion.classList.remove("alert-danger")
-            errorConexion.classList.add("alert-info")
             error = "No se ha podido encontrar la cita.";
         }
         errorP.innerText = error;
@@ -146,11 +158,15 @@ const getCita = async () => {
         if (getHistorial(user.token) && getRecetas(user.token)) {
             showCita(result.results[0]);
         }
+        console.log(result.results[1])
         if (result.results[1]==0) {
             arduinoModal.show()
         }
     }
 }
+/**
+ * updatehistorial recogera los datos del formulario para formar el cuerpo de la peticion que se realizara para modificar los datos
+ */
 const updateHistorial = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let newHistorial = {
@@ -184,7 +200,11 @@ const updateHistorial = async () => {
     historialModal.hide();
     resultsModal.show();
 }
-
+/**
+ * 
+ * @param state
+ *  updateCita recogera los datos del formulario para formar el cuerpo de la peticion que se realizara para modificar los datos al cual se añadira el estado de la cita (atendido o no presentado)
+ */
 const updateCita = async (state) => {
     let error ="";
     let user = JSON.parse(sessionStorage.getItem("user"));
@@ -197,7 +217,6 @@ const updateCita = async (state) => {
         "id_medico":result.results[0].id_medico,
         "estado":state,
     }
-    console.log(newCita)
     newCita.estado = state
     buttons.classList.toggle("hidden")
     buttonsLoader.classList.toggle("hidden")
@@ -213,7 +232,7 @@ const updateCita = async (state) => {
             resultsBody.classList.add("alert-danger")
         }
     } else {
-        error = "El historial ha sido cambiado correctamente.";
+        error = "La cita ha sido cambiada correctamente.";
         resultsBody.classList.remove("alert-danger")
         resultsBody.classList.add("alert-info")
         nextCita.classList.toggle("hidden")
@@ -229,6 +248,9 @@ const updateCita = async (state) => {
     historialModal.hide();
     resultsModal.show();
 }
+/**
+ * insertreceta conformara el body con los datos del formulario y realizara la peticion
+ */
 const insertReceta = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let body = {
@@ -245,17 +267,11 @@ const insertReceta = async () => {
     recetaSpan.innerText="Aceptar"
     recetaLoader.classList.toggle("hidden")
     if (typeof resultInsert == "number") {
-        if (resultInsert == 409) {
-            error = "Usted ya tiene una cita en dicha fecha.";
-        } else {
+        if (resultInsert == 500) {
             error = "No se pudo conectar al servidor, por favor intentelo más tarde.";
         }
-        resultsBody.classList.remove("alert-info")
-        resultsBody.classList.add("alert-danger")
     } else {
-        error = "La cita se creó correctamente.";
-        resultsBody.classList.remove("alert-danger")
-        resultsBody.classList.add("alert-info")
+        error = "La receta se creó correctamente.";
         recetas.innerHTML=""
         let insert = await getRecetas(user.token)
     }
@@ -264,6 +280,11 @@ const insertReceta = async () => {
     resultsModal.show()
 
 }
+/**
+ * 
+ * @param id
+ * deletereceta realizara una peticion del tipo delete para eliminar dicha receta 
+ */
 const deleteReceta = async (id)=>{
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await deleteRequest(`${baseUrl}receta/?id_receta=${id}`, user.token);
@@ -271,13 +292,8 @@ const deleteReceta = async (id)=>{
         if (result == 500) {
             error = "La receta no se pudo eliminar. Por favor vuelva a intentarlo.";
         }
-        resultsBody.classList.remove("alert-info")
-        resultsBody.classList.add("alert-danger")
     } else {
-        
-        resultsBody.classList.remove("alert-danger")
-        resultsBody.classList.add("alert-info")
-        resultsBody.innerText = "La receta ha sido eliminada correctamente.";
+        error = "La receta ha sido eliminada correctamente.";
         recetas.innerHTML=""
         let update = await getRecetas(user.token)
     }
@@ -285,6 +301,7 @@ const deleteReceta = async (id)=>{
     recetaModal.hide()
     resultsModal.show()
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     getCita()
 })
@@ -294,7 +311,12 @@ modifyHistorial.addEventListener("submit", (event) => {
 })
 createReceta.addEventListener("submit", (event) => {
     event.preventDefault()
-    insertReceta();
+    let error = checkText(medicamento, "medicamento") || checkText(dosis, "dosis") || checkText(frecuencia, "frecuencia")
+    if (error == "") {
+        insertReceta();
+    } else {
+        errorReceta.innerText = error
+    }
 })
 recetas.addEventListener("click",(event)=>{
     if(event.target.tagName=="BUTTON"){

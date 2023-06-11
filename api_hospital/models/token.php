@@ -61,6 +61,13 @@ class token {
         
         return $diccionario[$id];
     }
+    static public function removeKey($id) {
+        $contenido = file_get_contents("diccionario.json");
+        $diccionario = json_decode($contenido, true);
+        unset($diccionario[$id]);
+        $json = json_encode($diccionario);
+        file_put_contents("diccionario.json", $json);
+    }
     // la funcion createToken recibira como parametro la informacion de un usuario y generara un token con dicha informacion 
     static public function createToken($user) {
         $date = time();

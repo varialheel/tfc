@@ -1,8 +1,14 @@
+// creamos las variables
 const citaContainer = document.getElementById("citas");
 const table = document.getElementById("table");
 const errorContainer = document.getElementById("error");
 const errorP = document.getElementById("errorP");
 const loader = document.getElementById("loader");
+/**
+ * 
+ * @param citas
+ * con showcitas recorreremos el array de citas y crearemos una fila por cada una 
+ */
 const showCitas = (citas)=>{
     let fragment = document.createDocumentFragment();
     let cita;
@@ -21,6 +27,9 @@ const showCitas = (citas)=>{
     });
     citaContainer.appendChild(fragment);
 }
+/**
+ * loadcitas realizara una peticion para recoger las citas del medico que ha iniciado sesion y que sean de la fecha actual
+ */
 const loadCitas = async () => {
     var fecha = new Date();
     let año = fecha.getFullYear();
@@ -42,6 +51,7 @@ const loadCitas = async () => {
         table.classList.toggle("hidden")
     }
 }
+// añadimos el evento
 window.addEventListener("DOMContentLoaded", () => {
     loadCitas();
 })

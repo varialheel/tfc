@@ -5,21 +5,15 @@ $rutas = array_filter(explode("/", $_SERVER["REQUEST_URI"]));
 // comprobamos que existe tanto la url como la posición 2 de la url que es la que nos va a indicar la tabla (en caso de usar un virtual host tendremos que poner la posición 1)
 if (empty($rutas) || !isset($rutas[2])) {
     // en caso de no existir mandaremos un codigo 404
-    //     $json = [
-    //     "status"=>400,
-    //     "result"=>"Page not found"
-    // ];
-    //     echo json_encode($json,http_response_code($json["status"]));
-    //     return;
     GetController::fncResponse("Page not found", 400);
 }
+$token = getallheaders()["token"];
 // guardamos en una variable el método usado en la request de manera que podremos comprobar el método y cargar un fichero u otro en consecuencia
 $method = filter_input(INPUT_SERVER, "REQUEST_METHOD");
 if (isset($method)) {
-    // en caso de que el método exista recogeremos el token de la cabecera
-    $token = getallheaders()["token"];
     // comprobamos que la peticion no sea ni login ni register ya que para esas dos peticiones no es necesario un token
-    if ($rutas[2] != "login" && $rutas[2] != "register") {
+    if ($rutas[2] != "login" && $rutas[2] != "register" && $rutas[2] != "verificationCode" && $rutas[2] != "sendCode") {
+        // en caso de que el método exista recogeremos el token de la cabecera
         // en caso de que se quiera realizar una consulta comprobaremos que existe el token 
         if (isset($token)) {
             // ahora comprobaremos que el usuario tenga acceso, esto se comprobará con checkAccess
@@ -38,22 +32,9 @@ if (isset($method)) {
                     require_once "routes/services/delete.php";
                 }
             } else {
-                // $json = [
-                //     "status"=>403,
-                //     "result"=>"Unauthorized access"
-                // ];
-                //     echo json_encode($json,http_response_code($json["status"]));
-                //     return;
                 GetController::fncResponse("Unauthorized access", 403);
             }
         } else {
-            // $json = [
-            //     "status"=>403,
-            //     "result"=>"Unauthorized access"
-            // ];
-            //     echo json_encode($json,http_response_code($json["status"]));
-            //     return;
-
             GetController::fncResponse("Unauthorized access", 403);
         }
     } else {
@@ -63,10 +44,4 @@ if (isset($method)) {
     }
 } else {
     GetController::fncResponse("Page not found", 400);
-    // $json = [
-    //     "status"=>400,
-    //     "result"=>"Page not found"
-    // ];
-    //     echo json_encode($json,http_response_code($json["status"]));
-    //     return;
 }

@@ -1,19 +1,28 @@
+// creamos las variables
 const table = document.getElementById("table");
 const recetasContainer = document.getElementById("recetas");
 const errorContainer = document.getElementById("error");
 const loader = document.getElementById("loader");
+/**
+ * 
+ * @param receta 
+ * @returns codigoQRBase64
+ * generateQr hara uso de la libreria QRious para generar un codigo qr con los datos de la receta
+ */
 const generateQr = (receta) => {
     let qr = new QRious({
         value: `Medicamento: ${receta.medicamento}\nDosis: ${receta.dosis}\nDNI: ${receta.dni_paciente}`,
         size: 80
       });
-      
-      // Obtén la imagen base64 del código QR generado
+      // guardamos la imagen base64 del código QR generado
       let codigoQRBase64 = qr.toDataURL();
-      
-      // Asigna la imagen base64 como el origen de la etiqueta <img>
       return codigoQRBase64;
 }
+/**
+ * 
+ * @param recetas
+ *  createRecetas recorrera el array de recetas y creara una fila por cada receta
+ */
 const createRecetas = (recetas)=>{
     let fragment = document.createDocumentFragment();
     let tr;
@@ -31,6 +40,9 @@ const createRecetas = (recetas)=>{
     });
     recetasContainer.appendChild(fragment)
 }
+/**
+ * loadrecetas realizara una peticion para recoger los datos de las recetas del paciente
+ */
 const loadRecetas = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await getRequest(`${baseUrl}relations/?rel=receta,medico&key=id_medico&linkTo=dni_paciente&equalTo=${user.dni}`, user.token)
@@ -48,6 +60,7 @@ const loadRecetas = async () => {
         table.classList.toggle("hidden")
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     loadRecetas();
 })

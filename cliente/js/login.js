@@ -1,15 +1,19 @@
+// creamos las variables
 const loginForm = document.getElementById("login__form");
 const username = document.getElementById("username");
 const password = document.getElementById("password");
 const errorP = document.getElementById("errorP");
 const loader = document.getElementById("loader")
 const button = document.getElementById("button")
-const verifyModal = new bootstrap.Modal(document.getElementById('verificationModal'));
 const codeForm = document.getElementById('codeForm');
 const sendCode = document.getElementById('sendCode');
 const codeError = document.getElementById('codeError');
 const codeInput = document.getElementById('verification');
-
+// creamos una instancia del modal
+const verifyModal = new bootstrap.Modal(document.getElementById('verificationModal'));
+/**
+ * login realizara una peticion con los datos de inicio de sesion
+ */
 const login = async () => {
     let error = "";
     let body = {
@@ -29,10 +33,9 @@ const login = async () => {
         } else {
             error = "No se pudo conectar al servidor, por favor intentelo más tarde.";
         }
-        loader.classList.toggle("hidden");
-        button.innerText="Aceptar";
         errorP.innerText = error;
     } else {
+        // si la peticion fue correcta se comprobara el rol del usuario, si es paciente iniciara sesion
         if (result.results.rol=="paciente") {
             console.log(result.results.token.slice(result.results.token.lastIndexOf("&")+1,result.results.token.length))
             let dni = await getRequest(`${baseUrl}paciente/?select=dni_paciente&linkTo=id_usuario&equalTo=${result.results.token.slice(result.results.token.lastIndexOf("&")+1,result.results.token.length)}`,result.results.token);
@@ -40,11 +43,15 @@ const login = async () => {
             sessionStorage.setItem("user",JSON.stringify(result.results));
             window.location='pages/pacient_pages/home.html'
         } else {
+            // si no es paciente se mostrara el modal que pide el codigo de verificacion
             verifyModal.show();
         }
     }
 
 }
+/**
+ * sendVerificationCode realizara una peticion para que se vuelva a enviar el codigo de verificacion
+ */
 const sendVerificationCode = async ()=>{
     let error = "";
     let body = {
@@ -68,7 +75,9 @@ const sendVerificationCode = async ()=>{
     }
     codeError.innerText = error;
 }
-
+/**
+ * checkVerificationCode realizara una peticion para comprobar el codigo de verificacion, si es correcto se iniciara sesion
+ */
 const checkVerificationCode = async ()=>{
     let error = "";
     let body = {
@@ -96,15 +105,24 @@ const checkVerificationCode = async ()=>{
         window.location = 'pages/medic_pages/home.html';
     }
 }
-
+// añadimos los eventos
 loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    login();
+    let error = checkText(username,"nombre de usuario") || checkPassword(password)
+    if (error == "") {
+        login();
+    } else {
+        errorP.innerText = error
+    }
 })
 codeForm.addEventListener("submit",(event)=>{
     event.preventDefault()
     checkVerificationCode()
 })
 sendCode.addEventListener("click",()=>{
-    sendVerificationCode();
+    if (username.value!="") {
+        sendVerificationCode();
+    } else {
+        codeError.innerText = "El código de verificación es obligatorio."
+    }
 })

@@ -36,4 +36,14 @@ class PutModel {
         $sql = "UPDATE usuario SET password = ? where id_usuario = ?";
         return $bd->consulta($sql,[$password,$id]);
     }
+    static public function checkCode($code,$id) {
+        $bd = new Bd();
+        $sql = "UPDATE usuario SET code = ? where id_usuario = ?";
+        return $bd->consulta($sql,[$code,$id]);
+    }
+    static public function deleteCode($username) {
+        $bd = new Bd();
+        $sql = "UPDATE usuario SET code = null where username = ?";
+        return $bd->consulta($sql,[$username]);
+    }
 }

@@ -1,3 +1,4 @@
+// aqui tenemos funciones para creacion de elementos (p,img,tr...)
 const createP = (classes = "", id = "") => {
     let p = document.createElement("p");
     p.innerText = text;
@@ -86,4 +87,14 @@ const createImg = (src, alt, classes = "", id = "") => {
     img.setAttribute("src", src)
     img.setAttribute("alt", alt)
     return img;
+}
+const createTable = (classes = "", id = "") => {
+    let table = document.createElement("table");
+    if (classes != "") {
+        table.classList.add(...classes)
+    }
+    if (id != "") {
+        table.setAttribute("id", id)
+    }
+    return table;
 }

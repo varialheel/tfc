@@ -1,8 +1,14 @@
+// creamos las variables
 const citaContainer = document.getElementById("citas");
 const table = document.getElementById("table");
 const errorContainer = document.getElementById("error");
 const errorP = document.getElementById("errorP");
 const loader = document.getElementById("loader");
+/**
+ * 
+ * @param citas 
+ * showcitas creara una fila por cada cita y lo mostrara
+ */
 const showCitas = (citas)=>{
     let fragment = document.createDocumentFragment();
     let cita;
@@ -20,6 +26,9 @@ const showCitas = (citas)=>{
     });
     citaContainer.appendChild(fragment);
 }
+/**
+ * loadcitas realizara una peticion para recoger los datos del historial del paciente
+ */
 const loadCitas = async () => {
     let error = "";
     let user = JSON.parse(sessionStorage.getItem("user"));
@@ -38,6 +47,7 @@ const loadCitas = async () => {
         table.classList.toggle("hidden")
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     loadCitas();
 })

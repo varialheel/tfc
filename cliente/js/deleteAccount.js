@@ -1,6 +1,11 @@
+// creamos las variables
 const deleteButton = document.getElementById("deleteButton")
 const loaderDelete = document.getElementById("loaderDelete")
 const deleteSpan = document.getElementById("deleteSpan")
+const deleteAccountModal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+/**
+ * deleteAccount realizara una peticion para eliminar los datos de la cuenta
+ */
 const deleteAccount = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     deleteSpan.innerText=""
@@ -19,8 +24,10 @@ const deleteAccount = async () => {
             window.location = "../../index.html";
         })
     }
+    deleteAccountModal.hide()
     resultsModal.show();
 }
+// añadimos el evento
 deleteButton.addEventListener("click",()=>{
     deleteAccount()
 })

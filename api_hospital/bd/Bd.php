@@ -30,7 +30,7 @@ class Bd
         try {
             // creamos una consulta preparada a la cual pasaremos por parametros la consulta recibida. En caso de fallar generaremos una excepcion.
             if (!$stmt = $this->conexion->prepare($query)) {
-                echo "Error en la base de datos.";
+                return null;
             }
             /* Comprobamos que hayan pasado parametros, en caso de que el array de parametros no este vacio iremos enlazaremos cada parametro con la consulta
                 es importante saber que con foreach tendremos problemas al realizar consultas con varias condiciones por eso elegi el bucle for para recorrer el array*/
@@ -49,6 +49,7 @@ class Bd
             }
         } catch (Exception $e) {
             return null;
+            // return null;
         }
         // cerramos el cursor
         $stmt->closeCursor();
@@ -69,9 +70,12 @@ class Bd
             }
             // var_dump($stmt);
             return $stmt->execute();
-        } catch (Exception $e) {
-            // echo $e->getMessage();
-            return null;
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return 409;
+            } else {
+                return null;
+            }
         }
         $stmt->closeCursor();
     }

@@ -30,3 +30,9 @@ Contraseña: MnOpQrS0
 
 Usuario: meap2365
 Contraseña: MnO90123
+
+
+---------------------------------------
+dni de ejemplo:
+12345678Z
+11373919M

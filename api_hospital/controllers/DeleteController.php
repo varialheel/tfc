@@ -3,9 +3,13 @@
 require_once "models/DeleteModel.php";
 class DeleteController {
     // la funcion deleteData recibira como parametros la tabla sobre la que haremos la consulta y los datos que usaremos para filtrar
-    static public function deleteData($table,$datas) {
+    static public function deleteData($table,$datas,$token) {
         // comprobamos que la funcion del modelo se realiza correctamente y creamos la respuesta
         if (DeleteModel::deleteData($table,$datas)) {
+            if ($table=="usuario") {
+                $user = token::getUser($token);
+                token::removeKey($user->id);
+            }
             $response = "Datas deleted correctly";
             // mostramos la respuesta
             GetController::fncResponse($response);

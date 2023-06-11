@@ -1,3 +1,4 @@
+// creamos las variables
 const antecedentesP = document.getElementById("antecedentesP")
 const medicamentosP = document.getElementById("medicamentosP")
 const vacunasP = document.getElementById("vacunasP")
@@ -12,8 +13,12 @@ const downloadButton = document.getElementById("downloadButton")
 const downloadSpan = document.getElementById("downloadSpan")
 const errorContainer = document.getElementById("error")
 const errorP = document.getElementById("errorP")
-const resultsModal = new bootstrap.Modal(document.getElementById('results'));
 const resultsBody = document.getElementById("resultsBody");
+// creamos una instancia del modal
+const resultsModal = new bootstrap.Modal(document.getElementById('results'));
+/**
+ * downloadhistory realizara una peticion para que el historial del paciente sea enviado al correo
+ */
 const downloadHistory = async ()=>{
     let user = JSON.parse(sessionStorage.getItem("user"));
     downloadSpan.innerText="";
@@ -34,6 +39,9 @@ const downloadHistory = async ()=>{
         resultsModal.show();
     }
 }
+/**
+ * downloadhistory realizara una peticion para recoger los datos del historial del paciente
+ */
 const getHistory = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     loader.classList.toggle("hidden")
@@ -59,6 +67,7 @@ const getHistory = async () => {
     }
 
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     getHistory()
 })

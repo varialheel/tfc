@@ -1,7 +1,9 @@
+// recogemos el id de la cita pasado por la url, en caso de no existir devolveremos al paciente al inicio
 const idCita = new URLSearchParams(window.location.search).get("id")
 if (!idCita) {
     window.location = "home.html";
 }
+// creamos las variables
 const errorContainer = document.getElementById("error");
 const dataContainer = document.getElementById("datas");
 const loader = document.getElementById("loader");
@@ -16,15 +18,23 @@ const deleteButton = document.getElementById("deleteButton")
 const dateInput = document.getElementById("dateInput")
 const hourInput = document.getElementById("hourInput")
 const purposeInput = document.getElementById("purposeInput")
-const modifyModal = new bootstrap.Modal(document.getElementById('modifyModal'));
-const resultsModal = new bootstrap.Modal(document.getElementById('results'));
 const resultsTitle = document.getElementById('resultsTitle');
 const resultsBody = document.getElementById('resultsBody');
 const resultsButton = document.getElementById('resultsButton');
 const loaderButton = document.getElementById("loader")
-
+const modifyForm = document.getElementById("modifyForm")
+const errorP = document.getElementById("errorP")
 let cita = "";
 let error = "";
+// creamos instancias de los modales
+const modifyModal = new bootstrap.Modal(document.getElementById('modifyModal'));
+const resultsModal = new bootstrap.Modal(document.getElementById('results'));
+/**
+ * 
+ * @param cita 
+ * @param medico 
+ * insertdatas mostrara la informacion de la cita y del medico
+ */
 const insertDatas = (cita, medico) => {
     date.innerText += cita.fecha
     hour.innerText += cita.hora
@@ -37,6 +47,9 @@ const insertDatas = (cita, medico) => {
     purposeInput.value = cita.proposito
     dataContainer.classList.toggle("hidden")
 }
+/**
+ * updatecita realizara una peticion para modificar los datos de la cita con los datos recogidos del formulario
+ */
 const updateCita = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let newCita = cita.results[0];
@@ -59,6 +72,9 @@ const updateCita = async () => {
     resultsModal.show();
     
 }
+/**
+ * deleteCita realizara una peticion para eliminar la cita
+ */
 const deleteCita = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await deleteRequest(`${baseUrl}cita/?id_cita=${idCita}`, user.token);
@@ -77,6 +93,9 @@ const deleteCita = async () => {
         window.location = "home.html";
     })
 }
+/**
+ * loadMedico realizara una peticion para recoger los datos del medico de la cita
+ */
 const loadMedico = async (id, token) => {
     let medico = await getRequest(`${baseUrl}relations/?rel=medico,departamento&key=id_departamento&linkTo=id_medico&equalTo=${id}`, token)
     loader.classList.toggle("hidden")
@@ -92,6 +111,11 @@ const loadMedico = async (id, token) => {
         insertDatas(cita.results[0], medico.results[0])
     }
 }
+/**
+ * 
+ * @param id
+ * loadcita realizara una peticion para recoger los datos de la cita 
+ */
 const loadCita = async (id) => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     cita = await getRequest(`${baseUrl}cita/?linkTo=id_cita&equalTo=${id}`, user.token)
@@ -108,11 +132,18 @@ const loadCita = async (id) => {
         loadMedico(cita.results[0].id_medico, user.token)
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     loadCita(idCita)
 })
-modifyButton.addEventListener("click", () => {
-    updateCita();
+modifyForm.addEventListener("submit", (event) => {
+    event.preventDefault()
+    let error = checkCita(dateInput) || checkHour(hourInput) || checkText(purposeInput,"proposito")
+    if (error=="") {
+        updateCita();
+    } else {
+        errorP.innerText=error
+    }
 })
 deleteButton.addEventListener("click",()=>{
     deleteCita();

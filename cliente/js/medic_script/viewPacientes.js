@@ -1,3 +1,4 @@
+// creamos las variables
 const pacientes = document.getElementById("pacientes");
 const table = document.getElementById("table");
 const errorContainer = document.getElementById("error");
@@ -20,6 +21,11 @@ const pruebasSpan = document.getElementById("pruebasSpan")
 const consultasSpan = document.getElementById("consultasSpan")
 const cirugiasSpan = document.getElementById("cirugiasSpan")
 const notasSpan = document.getElementById("notasSpan")
+/**
+ * 
+ * @param pacientesArray 
+ * con showpacientes recorreremos el array de pacientes y crearemos una fila por cada uno
+ */
 const showPacientes = (pacientesArray) => {
     let fragment = document.createDocumentFragment();
     let tr;
@@ -40,8 +46,12 @@ const showPacientes = (pacientesArray) => {
     });
     pacientes.appendChild(fragment);
 }
+/**
+ * 
+ * @param historial 
+ * showhistorial mostrara la informacion de dicho historial
+ */
 const showHistorial = (historial) => {
-
     nombreSpan.innerText = historial.nombre
     apellidoSpan.innerText = historial.apellido
     fechaNacimientoSpan.innerText = historial.fec_nac
@@ -56,6 +66,9 @@ const showHistorial = (historial) => {
     cirugiasSpan.innerText = historial.cirugias
     notasSpan.innerText = historial.notas
 }
+/**
+ * loadpacientes realizara una peticion para recoger los datos de los pacientes que han sido atendidos por el medico
+ */
 const loadPacientes = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await getRequest(`${baseUrl}relations/?rel=cita,paciente&key=dni_paciente&distinct=1&linkTo=id_medico&equalTo=${user.id_medico}`, user.token)
@@ -73,6 +86,11 @@ const loadPacientes = async () => {
         table.classList.toggle("hidden")
     }
 }
+/**
+ * 
+ * @param dni
+ * loadhistorial realizara una peticion para recoger los datos del historial del paciente 
+ */
 const loadHistorial = async (dni) => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await getRequest(`${baseUrl}relations/?rel=historial,paciente&key=dni_paciente&linkTo=dni_paciente&equalTo=${dni}`, user.token)
@@ -89,9 +107,9 @@ const loadHistorial = async (dni) => {
         errorContainer.classList.toggle("hidden")
     } else {
         showHistorial(result.results[0]);
-        // table.classList.toggle("hidden")
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     loadPacientes();
 })

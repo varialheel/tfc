@@ -1,3 +1,4 @@
+// variables
 const loader = document.getElementById("loader");
 const errorContainer = document.getElementById("error");
 const username = document.getElementById("username");
@@ -14,15 +15,23 @@ const loaderButton = document.getElementById("loaderButton")
 const userData = document.getElementById("userData")
 const pacientData = document.getElementById("pacientData")
 const resultsBody = document.getElementById("resultsBody");
-const resultsModal = new bootstrap.Modal(document.getElementById('results'));
 const resultsButton = document.getElementById('resultsButton');
+const errorP = document.getElementById('errorP');
+const resultsModal = new bootstrap.Modal(document.getElementById('results'));
 let result;
+/**
+ * Con updateaccount realizaremos peticiones put para modificar los datos del medico
+ */
 const updateAccount = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
+    // creamos los body de las peticiones
     let userBody = {
         "id_usuario": result.results[0].id_usuario,
-        "username": result.results[0].username
+        "username": result.results[0].username,
+        "rol": result.results[0].rol,
+        "code": null
     }
+    // comprobamos si ha cambiado la contraseña
     if (password.value != "") {
         userBody.password = password.value
     } else {
@@ -39,8 +48,10 @@ const updateAccount = async () => {
         "id_departamento": result.results[0].id_departamento,
         "id_usuario": result.results[0].id_usuario
     }
+    // hacemos aparecer el loader
     loaderButton.classList.toggle("hidden")
     buttonSpan.innerText = ""
+    // comprobamos si ha modificado tanto el usuario como los datos del medico, en caso de modificar ambos realizaremos dos peticiones y si no realizaremos solo una
     if (!checkInputs(userData) && !checkInputs(pacientData)) {
         let resultUser = await putRequest(`${baseUrl}usuario`, userBody, user.token)
         if (typeof resultUser == "number") {
@@ -54,10 +65,11 @@ const updateAccount = async () => {
             resultsBody.innerText = error
             resultsModal.show()
         } else {
+            // en caso de que la modificación del usuario haya sido correcta realizaremos la peticion para modificar los datos del medico
             let resultAccount = await putRequest(`${baseUrl}medico`, accountBody, user.token)
             if (typeof resultAccount == "number") {
                 if (resultAccount == 409) {
-                    error = "El usuario."
+                    error = "La información no pudo ser actualizada."
                 } else{
                     error = "El servidor no responde o se encuentra en mantenimiento. Por favor intentelo más tarde."
                 }
@@ -76,6 +88,7 @@ const updateAccount = async () => {
                 resultsModal.show()
             }
         }
+        // en caso de que solo haya modificado datos en una seccion comprobaremos que seccion ha sido modificada y realizaremos la peticion
     } else if (!checkInputs(userData)) {
         let resultUser = await putRequest(`${baseUrl}usuario`, userBody, user.token)
         if (typeof resultUser == "number") {
@@ -122,6 +135,9 @@ const updateAccount = async () => {
     }
 
 }
+/**
+ * la funcion loadAccount realizara una peticion para recoger los datos de la cuenta(usuario y medico)
+ */
 const loadAccount = async () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     result = await getRequest(`${baseUrl}getAccount`, user.token)
@@ -135,6 +151,7 @@ const loadAccount = async () => {
         errorContainer.querySelector("h2").innerText = error;
         errorContainer.classList.toggle("hidden")
     } else {
+        // en caso de que la peticion se haya realizado correctamente insertaremos los datos en los value
         username.setAttribute("value", result.results[0].username)
         dni_medico.setAttribute("value", result.results[0].dni_medico)
         nombre.setAttribute("value", result.results[0].nombre)
@@ -144,6 +161,12 @@ const loadAccount = async () => {
         accountForm.classList.toggle("hidden")
     }
 }
+/**
+ * 
+ * @param {*} field 
+ * @returns disabled
+ * checkinputs comprobara si todos los inputs estan deshabilitados lo que indicara que no se ha modificado
+ */
 const checkInputs = (field) => {
     let disabled = true;
     field.querySelectorAll("input").forEach(element => {
@@ -153,9 +176,17 @@ const checkInputs = (field) => {
     })
     return disabled
 }
+/**
+ * 
+ * @param element 
+ * la funcion controlbuttons se encarga de controlar el cambio de los botones ademas de habilitar/deshabilitar el input
+ */
 const controlButtons = (element) => {
+    // comprobamos que el elemento sea un button o un i
     if (element.tagName == "I" || element.tagName == "BUTTON") {
+        // en caso de que cumpla la condicion comprobaremos la clase para ver que accion se debe realizar
         if (element.classList.contains("edit") || element.classList.contains("bi-pencil-fill")) {
+            // como tenemos iconos al hacer click el evento podra detectar el boton o la etiqueta por lo que tendremos que añadir un parentNode en caso de que se seleccione la etiqueta
             if (element.classList.contains("bi-pencil-fill")) {
                 element.parentNode.nextElementSibling.style.animation = 'fadeIn 1s forwards';
                 element.parentNode.nextElementSibling.classList.toggle("hidden")
@@ -170,6 +201,7 @@ const controlButtons = (element) => {
                 element.parentNode.previousElementSibling.disabled = !element.parentNode.previousElementSibling.disabled;
 
             }
+            // comprobamos que se ha modificado algun dato y habilitamos el boton
             if (checkInputs(userData) && checkInputs(pacientData)) {
                 submitButton.disabled = true;
             } else {
@@ -192,6 +224,7 @@ const controlButtons = (element) => {
                 element.classList.toggle("hidden")
                 input.disabled = !input.disabled;
             }
+            // cuando se cancele la edicion significara que no se quiere modificar el dato por lo que cambiaremos el valor a su estado original
             if (input.getAttribute("id") != "password") {
                 window[input.getAttribute("id")].value = result.results[0][input.getAttribute("id")]
             } else {
@@ -205,6 +238,7 @@ const controlButtons = (element) => {
         }
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded", () => {
     loadAccount();
 })
@@ -212,6 +246,16 @@ accountForm.addEventListener("click", (event) => {
     controlButtons(event.target)
 })
 accountForm.addEventListener("submit", (event) => {
+    let error = ""
     event.preventDefault()
-    updateAccount();
+    if (password.value!="") {
+        error = checkPassword(password) || checkDni(dni_medico) || checkText(nombre,"nombre") || checkText(apellido,"apellido") || checkTelefono(telefono) || checkMail(email)
+    } else {
+        error = checkDni(dni_medico) || checkText(nombre,"nombre") || checkText(apellido,"apellido") || checkTelefono(telefono) || checkMail(email)
+    }
+    if (error == "") {
+        updateAccount();
+    } else {
+        errorP.innerText=error
+    }
 })

@@ -10,7 +10,7 @@ html, body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 textarea {
     resize: none;
@@ -18,4 +18,10 @@ textarea {
 .add_scroll {
     max-height: 590px;
     overflow-y: scroll;
+}
+.buttons__container {
+    margin: 1em;
+}
+.result {
+    z-index: 1500;
 }

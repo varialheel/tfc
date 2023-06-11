@@ -1,3 +1,4 @@
+// creamos las variables
 const registerForm = document.getElementById("register__form");
 const dni = document.getElementById("dni");
 const nombre = document.getElementById("name");
@@ -11,6 +12,9 @@ const loader = document.getElementById("loader")
 const button = document.getElementById("button")
 const insertedDiv = document.getElementById("inserted")
 const formContainer = document.getElementById("form__container")
+/**
+ * register realizara una peticion con los datos del formulario para generar un usuario e insertar los datos del paciente
+ */
 const register = async ()=>{
     let error = "";
     let body = {
@@ -25,7 +29,6 @@ const register = async ()=>{
     loader.classList.toggle("hidden");
     button.innerText="";
     let result = await postRequest(`${baseUrl}register/?rol=paciente`,body)
-    // let result = "await postRequest(`${baseUrl}register/?rol=paciente`,body)"
     if (typeof result == "number"||result==null) {
         loader.classList.toggle("hidden");
         button.innerText="Aceptar";
@@ -42,7 +45,13 @@ const register = async ()=>{
     }
     errorP.innerText = error;
 }
+// añadimos los eventos
 registerForm.addEventListener("submit",(event)=>{
     event.preventDefault();
-    register();
+    error = checkDni(dni) || checkText(nombre, "nombre") || checkText(lastname, "apellido") || checkFecNac(fec_nac) || checkTelefono(tlf) || checkText(address, "dirección") || checkMail(mail)
+    if (error=="") {
+        register();
+    } else {
+        errorP.innerText = error
+    }
 })

@@ -1,7 +1,7 @@
+//creamos las variables
 const departament = document.getElementById("departament");
 const resultsBody = document.getElementById("resultsBody");
 const loader = document.getElementById("loader");
-const resultsModal = new bootstrap.Modal(document.getElementById('results'));
 const resultsButton = document.getElementById('resultsButton');
 const departamentSelect = document.getElementById("departament");
 const doctors = document.getElementById("doctors");
@@ -12,6 +12,12 @@ const hourInput = document.getElementById("hourInput");
 const purposeInput = document.getElementById("purposeInput");
 const button = document.getElementById("button")
 const loaderButton = document.getElementById("loaderButton")
+const errorP = document.getElementById("errorP")
+// creamos una instancia del modal
+const resultsModal = new bootstrap.Modal(document.getElementById('results'));
+/**
+ * insertcita realizara una peticion para insertar los datos recogidos del formulario
+ */
 const insertCita = async ()=>{
     let user = JSON.parse(sessionStorage.getItem("user"));
     let body = {
@@ -40,6 +46,11 @@ const insertCita = async ()=>{
     resultsBody.innerText=error;
     resultsModal.show()
 }
+/**
+ * 
+ * @param departaments
+ * showdepartaments recorrera el array de departamentos y creara una option por cada departamento 
+ */
 const showDepartaments = (departaments)=> {
     let fragment = document.createDocumentFragment();
     departaments.forEach(element => {
@@ -47,6 +58,11 @@ const showDepartaments = (departaments)=> {
     });
     departamentSelect.appendChild(fragment)
 }
+/**
+ * 
+ * @param medicos
+ * showDoctors recorrera el array de medicos y creara una option por cada medico 
+ */
 const showDoctors = (medicos)=> {
     let fragment = document.createDocumentFragment();
     medicos.forEach(element => {
@@ -54,6 +70,9 @@ const showDoctors = (medicos)=> {
     });
     doctors.appendChild(fragment)
 }
+/**
+ * loadDepartament realizara una peticion para recoger los datos de los departamentos
+ */
 const loadDepartament= async ()=>{
     let user = JSON.parse(sessionStorage.getItem("user"));
     let result = await getRequest(`${baseUrl}departamento`,user.token)
@@ -72,6 +91,9 @@ const loadDepartament= async ()=>{
         showDepartaments(result.results)
     }
 }
+/**
+ * loadDoctors realizara una peticion para recoger los datos de los medicos
+ */
 const loadDoctors = async ()=>{
     while (doctors.firstChild) {
         doctors.removeChild(doctors.firstChild);
@@ -95,6 +117,7 @@ const loadDoctors = async ()=>{
         doctorsContainer.classList.remove("hidden")
     }
 }
+// añadimos los eventos
 window.addEventListener("DOMContentLoaded",()=>{
     loadDepartament();
 })
@@ -103,7 +126,12 @@ departamentSelect.addEventListener("change",()=>{
 })
 insert_form.addEventListener("submit",(event)=>{
     event.preventDefault();
-    insertCita();
+    let error = checkCita(dateInput) || checkHour(hourInput) || checkText(purposeInput, "proposito") || checkText(doctors,"medico")
+    if (error=="") {
+        insertCita();
+    } else {
+        errorP.innerText=error
+    }
 })
 resultsButton.addEventListener("click",()=>{
     resultsModal.hide()
