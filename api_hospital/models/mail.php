@@ -29,7 +29,7 @@ class Mail
             $mail->Port = 465;
 
             //Recipients
-            $mail->setFrom('apihospital1@gmail.com');
+            $mail->setFrom('********');
             //Add a recipient
             $mail->addAddress($destino, 'Alias');
 
