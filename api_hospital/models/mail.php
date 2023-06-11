@@ -20,9 +20,9 @@ class Mail
             //Enable SMTP authentication
             $mail->SMTPAuth = true;
             //SMTP username
-            $mail->Username = 'apihospital1@gmail.com';
+            $mail->Username = '**********';
             //SMTP password
-            $mail->Password = 'whhgtzpfyqmbyhjb';
+            $mail->Password = '*******';
             //Enable implicit TLS encryption
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
